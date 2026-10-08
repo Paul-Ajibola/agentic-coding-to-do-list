@@ -394,20 +394,29 @@ h1 { margin-bottom: 1.5rem; }
   text-transform: none;
 }
 
-.diary-button {
+.utility-buttons {
   position: fixed;
   top: 1rem;
-  right: 6.4rem;
+  right: 6.1rem;
   z-index: 20;
-  padding: 0.6rem 0.9rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.utility-button {
+  min-width: 9.2rem;
+  padding: 0.55rem 0.7rem;
   background: rgba(23, 23, 23, 0.45);
   color: var(--ink);
   border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.74rem;
   font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
   backdrop-filter: blur(6px);
 }
-.diary-button:hover {
+.utility-button:hover {
   background: rgba(255, 87, 34, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 0 1px rgba(255, 87, 34, 0.18), 0 12px 26px rgba(255, 87, 34, 0.18);

@@ -41,9 +41,10 @@ export default function App() {
   const [clock, setClock] = useState(new Date());
   const orderBeforeDrag = useRef(null); // lets us undo a drag if saving fails
   const [error, setError] = useState("");
-  const [diaryOpen, setDiaryOpen] = useState(false);
-  const [diaryPassword, setDiaryPassword] = useState("");
-  const [diaryError, setDiaryError] = useState("");
+  const [protectedLinkOpen, setProtectedLinkOpen] = useState(false);
+  const [protectedLinkTarget, setProtectedLinkTarget] = useState(null);
+  const [protectedLinkPassword, setProtectedLinkPassword] = useState("");
+  const [protectedLinkError, setProtectedLinkError] = useState("");
 
   useEffect(() => {
     api.list().then(setTodos).catch(() => setError("Can't reach the server. Is the backend running?"));
@@ -150,28 +151,25 @@ export default function App() {
     setTab("todo");
   };
 
-  const openDiary = () => {
-    setDiaryPassword("");
-    setDiaryError("");
-    setDiaryOpen(true);
+  const openProtectedLink = (target) => {
+    setProtectedLinkTarget(target);
+    setProtectedLinkPassword("");
+    setProtectedLinkError("");
+    setProtectedLinkOpen(true);
   };
 
-  const handleDiarySubmit = (e) => {
+  const handleProtectedLinkSubmit = (e) => {
     e.preventDefault();
 
-    if (diaryPassword === "PAUL193231") {
-      setDiaryOpen(false);
-      setDiaryPassword("");
-      setDiaryError("");
-      window.open(
-        "https://docs.google.com/document/d/18VJnxqABdXmvFYNvy0Ptoe1cPFHo5pYJ1CJ2b-Hxo8A/edit?tab=t.0",
-        "_blank",
-        "noopener,noreferrer"
-      );
+    if (protectedLinkPassword === "PAUL193231") {
+      setProtectedLinkOpen(false);
+      setProtectedLinkPassword("");
+      setProtectedLinkError("");
+      window.open(protectedLinkTarget, "_blank", "noopener,noreferrer");
       return;
     }
 
-    setDiaryError("Incorrect password. Please try again.");
+    setProtectedLinkError("Incorrect password. Please try again.");
   };
 
   return (
@@ -295,9 +293,14 @@ export default function App() {
       </section>
       </main>
 
-      <button className="diary-button" type="button" onClick={openDiary}>
-        Diary
-      </button>
+      <div className="utility-buttons">
+        <button className="utility-button" type="button" onClick={() => openProtectedLink("https://docs.google.com/document/d/18VJnxqABdXmvFYNvy0Ptoe1cPFHo5pYJ1CJ2b-Hxo8A/edit?tab=t.0")}>
+          Diary
+        </button>
+        <button className="utility-button" type="button" onClick={() => openProtectedLink("https://docs.google.com/document/d/1vAipwB4vY1sIQP3kR2pimqXDKDokzdc1cELCFrNale8/edit?usp=sharing")}>
+          Gratitude Journal
+        </button>
+      </div>
 
       <aside className="quote-panel" aria-label="Daily inspiration quotes">
         <blockquote>
@@ -310,28 +313,28 @@ export default function App() {
         </blockquote>
       </aside>
 
-      {diaryOpen && (
-        <div className="diary-modal-backdrop" onClick={() => setDiaryOpen(false)}>
+      {protectedLinkOpen && (
+        <div className="diary-modal-backdrop" onClick={() => setProtectedLinkOpen(false)}>
           <div className="diary-modal" role="dialog" aria-modal="true" aria-labelledby="diary-dialog-title" onClick={(e) => e.stopPropagation()}>
-            <h2 id="diary-dialog-title">Access your diary</h2>
-            <p>Enter your password to continue.</p>
-            <form onSubmit={handleDiarySubmit}>
+            <h2 id="diary-dialog-title">Protected page</h2>
+            <p>Enter the password to continue.</p>
+            <form onSubmit={handleProtectedLinkSubmit}>
               <label className="sr-only" htmlFor="diary-password">Password</label>
               <input
                 id="diary-password"
                 type="password"
-                value={diaryPassword}
+                value={protectedLinkPassword}
                 onChange={(e) => {
-                  setDiaryPassword(e.target.value);
-                  if (diaryError) setDiaryError("");
+                  setProtectedLinkPassword(e.target.value);
+                  if (protectedLinkError) setProtectedLinkError("");
                 }}
                 placeholder="Password"
                 autoFocus
               />
-              {diaryError && <p className="diary-error">{diaryError}</p>}
+              {protectedLinkError && <p className="diary-error">{protectedLinkError}</p>}
               <div className="diary-actions">
-                <button type="button" className="secondary" onClick={() => setDiaryOpen(false)}>Cancel</button>
-                <button type="submit" className="primary">Open Diary</button>
+                <button type="button" className="secondary" onClick={() => setProtectedLinkOpen(false)}>Cancel</button>
+                <button type="submit" className="primary">Open</button>
               </div>
             </form>
           </div>
