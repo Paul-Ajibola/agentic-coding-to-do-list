@@ -21,6 +21,49 @@ from main import app, db  # noqa: E402
 client = TestClient(app)
 
 
+def test_database_url_enables_postgres_mode(monkeypatch):
+    monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@localhost:5432/todos")
+
+    import importlib
+    import psycopg
+
+    class DummyCursor:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def execute(self, *args, **kwargs):
+            return None
+
+        def fetchall(self):
+            return []
+
+        def fetchone(self):
+            return None
+
+    class DummyConn:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def cursor(self, *args, **kwargs):
+            return DummyCursor()
+
+        def commit(self):
+            pass
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(psycopg, "connect", lambda *args, **kwargs: DummyConn())
+
+    import main
+
+    importlib.reload(main)
+    assert main.is_postgres_enabled() is True
+
+
 @pytest.fixture(autouse=True)
 def empty_database():
     """Every test starts with an empty list, so tests can't affect each other."""
