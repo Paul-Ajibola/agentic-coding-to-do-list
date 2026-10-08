@@ -140,7 +140,15 @@ export default function App() {
     { id: "todo", label: "To do", count: todoItems.length },
     { id: "in_progress", label: "In Progress", count: inProgressItems.length },
     { id: "done", label: "Done", count: doneItems.length },
+    { id: "journal", label: "Gratitude Journal", count: null },
   ];
+
+  const gratitudeJournalUrl = "https://docs.google.com/document/d/1vAipwB4vY1sIQP3kR2pimqXDKDokzdc1cELCFrNale8/edit?usp=sharing";
+
+  const openGratitudeJournal = () => {
+    window.open(gratitudeJournalUrl, "_blank", "noopener,noreferrer");
+    setTab("todo");
+  };
 
   const openDiary = () => {
     setDiaryPassword("");
@@ -228,9 +236,16 @@ export default function App() {
             aria-selected={tab === t.id}
             aria-controls="panel"
             className={tab === t.id ? "tab active" : "tab"}
-            onClick={() => setTab(t.id)}
+            onClick={() => {
+              if (t.id === "journal") {
+                openGratitudeJournal();
+                return;
+              }
+              setTab(t.id);
+            }}
           >
-            {t.label} <span className="badge">{t.count}</span>
+            {t.label}
+            {t.count !== null && <span className="badge">{t.count}</span>}
           </button>
         ))}
       </div>
