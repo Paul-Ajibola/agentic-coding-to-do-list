@@ -4,6 +4,8 @@ import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Literal
+from fastapi.middleware.cors import CORSMiddleware
+import logging
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -20,6 +22,23 @@ except ImportError:  # pragma: no cover - handled at runtime when DATABASE_URL i
 DB_FILE = os.environ.get("TODO_DB", str(Path(__file__).with_name("todos.db")))
 VALID_STATUSES = {"todo", "in_progress", "done"}
 app = FastAPI(title="Todo API")
+
+# allow your frontend domains to talk to this backend
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_database_url() -> str | None:

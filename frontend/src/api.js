@@ -1,6 +1,10 @@
-// All talk to the Python backend lives here, so components stay simple.
+// All communication with the Python backend lives here, so components stay simple.
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
+
 async function request(path = "", method = "GET", body) {
-  const res = await fetch(`/api/todos${path}`, {
+  const url = `${API_BASE_URL}/api/todos${path}`;
+
+  const res = await fetch(url, {
     method,
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
